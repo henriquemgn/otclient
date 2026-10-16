@@ -1,0 +1,304 @@
+// =============================================================================
+// DBO HUD: health orb (left) + 6 skills + 2 potions + ki orb (right)
+// =============================================================================
+
+DboSlot < UIWidget
+  size: 42 42
+  image-source: /images/dbo/slot
+  phantom: false
+  focusable: false
+
+  UIWidget
+    id: icon
+    anchors.fill: parent
+    margin: 3
+    phantom: true
+
+  UIItem
+    id: item
+    anchors.centerIn: parent
+    size: 34 34
+    virtual: true
+    phantom: true
+    visible: false
+
+  UIProgressRect
+    id: cooldown
+    anchors.fill: parent
+    margin: 3
+    background: #000000b0
+    percent: 100
+    phantom: true
+    visible: false
+
+  Label
+    id: cooldownText
+    anchors.centerIn: parent
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: lock
+    anchors.fill: parent
+    margin: 3
+    background-color: #000000c0
+    phantom: true
+    visible: false
+
+  Label
+    id: lockText
+    anchors.centerIn: parent
+    font: verdana-11px-rounded
+    color: #c8b89a
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: count
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: 3 4 0 0
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: key
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.bottom
+    margin-top: -1
+    font: verdana-11px-rounded
+    color: #ffd27a
+    text-auto-resize: true
+    phantom: true
+
+  UIWidget
+    id: hover
+    anchors.fill: parent
+    image-source: /images/dbo/slot_hover
+    phantom: true
+    visible: false
+
+DboOrb < UIWidget
+  size: 124 124
+  phantom: false
+
+  UIWidget
+    id: frame
+    anchors.fill: parent
+    phantom: true
+
+  UIWidget
+    id: fill
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 12
+    size: 100 100
+    phantom: true
+
+  UIWidget
+    id: glass
+    anchors.centerIn: parent
+    size: 100 100
+    image-source: /images/dbo/orb_glass
+    phantom: true
+
+  Label
+    id: value
+    anchors.centerIn: parent
+    margin-top: 6
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-align: center
+    text-auto-resize: true
+    phantom: true
+
+  Label
+    id: label
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    margin-top: 30
+    font: verdana-11px-rounded
+    color: #ffe9b0
+    text-auto-resize: true
+    phantom: true
+
+DboRoundButton < UIButton
+  size: 40 40
+  image-source: /images/dbo/round_button
+  $hover:
+    image-source: /images/dbo/round_button_hover
+  UIWidget
+    id: icon
+    anchors.centerIn: parent
+    size: 28 28
+    phantom: true
+  Label
+    id: badge
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin: -2 -2 0 0
+    font: verdana-11px-rounded
+    color: #ffffff
+    background-color: #c02020
+    text-auto-resize: true
+    padding: 0 3 0 3
+    phantom: true
+    visible: false
+
+UIWidget
+  id: dboHud
+  size: 980 150
+  anchors.bottom: parent.bottom
+  anchors.horizontalCenter: parent.horizontalCenter
+  phantom: true
+  focusable: false
+
+  UIWidget
+    id: bar
+    size: 456 66
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    image-source: /images/dbo/bar
+    image-border: 12
+    phantom: false
+
+    UIWidget
+      id: expBar
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 8 14 0 14
+      height: 6
+      image-source: /images/dbo/exp_bg
+      image-border: 2
+      phantom: false
+
+      UIWidget
+        id: expFill
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        margin: 1
+        width: 0
+        image-source: /images/dbo/exp_fill
+        image-border: 1
+        phantom: true
+
+    UIWidget
+      id: slots
+      anchors.top: expBar.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      size: 386 42
+      phantom: true
+
+  UIWidget
+    id: dome
+    size: 150 58
+    anchors.bottom: bar.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: -4
+    image-source: /images/dbo/dome
+    phantom: true
+
+  UICreature
+    id: portrait
+    size: 64 64
+    anchors.bottom: bar.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: -2
+    phantom: false
+    @onClick: modules.game_dbo.toggleClassPanel()
+
+  DboStarRow
+    id: stars
+    anchors.bottom: bar.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 2
+    phantom: true
+
+  UIWidget
+    id: levelBadge
+    size: 30 30
+    anchors.right: dome.left
+    anchors.bottom: bar.top
+    margin-right: -14
+    margin-bottom: 2
+    image-source: /images/dbo/round_button
+    phantom: true
+
+  Label
+    id: level
+    anchors.centerIn: levelBadge
+    font: verdana-11px-rounded
+    color: #ffd27a
+    text-auto-resize: true
+    phantom: true
+
+  DboRoundButton
+    id: transformButton
+    size: 34 34
+    anchors.left: dome.right
+    anchors.bottom: bar.top
+    margin-left: -14
+    margin-bottom: 2
+    @onClick: modules.game_dbo.onTransformClick()
+
+  DboOrb
+    id: healthOrb
+    anchors.right: bar.left
+    anchors.bottom: parent.bottom
+    margin-right: -26
+    margin-bottom: -4
+
+  DboOrb
+    id: manaOrb
+    anchors.left: bar.right
+    anchors.bottom: parent.bottom
+    margin-left: -26
+    margin-bottom: -4
+
+  UIWidget
+    id: menu
+    anchors.left: manaOrb.right
+    anchors.bottom: parent.bottom
+    margin-left: 4
+    margin-bottom: 6
+    size: 88 88
+    phantom: true
+
+    DboRoundButton
+      id: wishButton
+      anchors.top: parent.top
+      anchors.left: parent.left
+      !tooltip: tr('Desejos (Gacha)')
+      @onClick: modules.game_dbo.toggleWish()
+
+    DboRoundButton
+      id: forgeButton
+      anchors.top: parent.top
+      anchors.left: wishButton.right
+      margin-left: 6
+      !tooltip: tr('Forja')
+      @onClick: modules.game_dbo.toggleForge()
+
+    DboRoundButton
+      id: dungeonButton
+      anchors.top: wishButton.bottom
+      anchors.left: parent.left
+      margin-top: 6
+      !tooltip: tr('Dungeons')
+      @onClick: modules.game_dbo.toggleDungeons()
+
+    DboRoundButton
+      id: tasksButton
+      anchors.top: wishButton.bottom
+      anchors.left: dungeonButton.right
+      margin-top: 6
+      margin-left: 6
+      !tooltip: tr('Linked Tasks')
+      @onClick: modules.game_dbo.toggleTasks()

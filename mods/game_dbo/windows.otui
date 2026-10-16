@@ -1,0 +1,450 @@
+// =============================================================================
+// DBO windows: class pick, class panel, wishes (gacha), forge, dungeons, tasks
+// =============================================================================
+
+// ---------------------------------------------------------------- class pick
+DboPickCard < DboCard
+  size: 150 236
+  UICreature
+    id: outfit
+    size: 80 80
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 4
+    phantom: true
+  DboTitle
+    id: name
+    anchors.top: outfit.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+  DboSmall
+    id: role
+    anchors.top: name.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    color: #ff9e3d
+  Label
+    id: description
+    anchors.top: role.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 60
+    font: verdana-11px-rounded
+    color: #d8ccb4
+    text-wrap: true
+    text-align: center
+  DboButton
+    id: choose
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    !text: tr('Escolher')
+
+DboPickWindow < DboWindow
+  size: 660 330
+  DboSmall
+    id: subtitle
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    !text: tr('Escolha seu primeiro personagem. Os outros sao desbloqueados com fragmentos dos Desejos.')
+  UIWidget
+    id: cards
+    anchors.top: subtitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 10
+    layout:
+      type: horizontalBox
+      spacing: 8
+
+// ---------------------------------------------------------------- class panel
+DboClassRow < DboCard
+  height: 76
+  UICreature
+    id: outfit
+    size: 64 64
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+  DboTitle
+    id: name
+    anchors.left: outfit.right
+    anchors.top: parent.top
+    margin-left: 6
+  DboSmall
+    id: role
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+    color: #ff9e3d
+  DboStarRow
+    id: stars
+    anchors.left: outfit.right
+    anchors.top: name.bottom
+    margin-left: 6
+    margin-top: 3
+  DboProgress
+    id: fragments
+    anchors.left: outfit.right
+    anchors.top: stars.bottom
+    margin-left: 6
+    margin-top: 5
+    width: 150
+  DboSmall
+    id: form
+    anchors.left: outfit.right
+    anchors.top: fragments.bottom
+    margin-left: 6
+    margin-top: 2
+  DboButton
+    id: use
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 6
+    width: 90
+    !text: tr('Usar')
+  DboBlueButton
+    id: star
+    anchors.right: parent.right
+    anchors.top: use.bottom
+    margin-top: 6
+    width: 90
+    !text: tr('Evoluir')
+
+DboClassWindow < DboWindow
+  size: 360 412
+  UIScrollArea
+    id: list
+    anchors.fill: parent
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      spacing: 6
+  VerticalScrollBar
+    id: listScroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.right: list.right
+    step: 40
+    pixels-scroll: true
+
+// ---------------------------------------------------------------- wishes (gacha)
+DboWishResult < DboCard
+  size: 92 112
+  UICreature
+    id: outfit
+    size: 64 64
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+  DboTitle
+    id: name
+    anchors.top: outfit.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+  DboLabel
+    id: amount
+    anchors.top: name.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    color: #ffffff
+
+DboWishWindow < DboWindow
+  size: 540 430
+  UIWidget
+    id: sphere
+    size: 72 72
+    anchors.top: parent.top
+    anchors.left: parent.left
+    image-source: /images/dbo/sphere
+  DboTitle
+    id: spheres
+    anchors.top: sphere.top
+    anchors.left: sphere.right
+    margin-left: 10
+  DboLabel
+    id: coins
+    anchors.top: spheres.bottom
+    anchors.left: sphere.right
+    margin: 4 0 0 10
+  DboSmall
+    id: odds
+    anchors.top: coins.bottom
+    anchors.left: sphere.right
+    margin: 4 0 0 10
+  DboButton
+    id: buy1
+    anchors.top: parent.top
+    anchors.right: parent.right
+    width: 150
+  DboButton
+    id: buy10
+    anchors.top: buy1.bottom
+    anchors.right: parent.right
+    margin-top: 6
+    width: 150
+  DboBlueButton
+    id: wish1
+    anchors.top: buy10.bottom
+    anchors.right: parent.right
+    margin-top: 12
+    width: 150
+    !text: tr('Fazer 1 Desejo')
+  DboBlueButton
+    id: wish10
+    anchors.top: wish1.bottom
+    anchors.right: parent.right
+    margin-top: 6
+    width: 150
+    !text: tr('Fazer 10 Desejos')
+  DboTitle
+    id: resultsTitle
+    anchors.top: sphere.bottom
+    anchors.left: parent.left
+    margin-top: 40
+    !text: tr('Resultado')
+  UIWidget
+    id: results
+    anchors.top: resultsTitle.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 6
+    layout:
+      type: grid
+      cell-size: 98 116
+      cell-spacing: 4
+      flow: true
+
+// ---------------------------------------------------------------- forge
+DboForgeRow < DboCard
+  height: 58
+  UIItem
+    id: item
+    size: 40 40
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    virtual: true
+    phantom: true
+  DboTitle
+    id: name
+    anchors.left: item.right
+    anchors.top: parent.top
+    margin-left: 8
+  DboSmall
+    id: slot
+    anchors.left: name.right
+    anchors.verticalCenter: name.verticalCenter
+    margin-left: 6
+  DboProgress
+    id: tier
+    anchors.left: item.right
+    anchors.top: name.bottom
+    margin: 4 0 0 8
+    width: 150
+  DboSmall
+    id: cost
+    anchors.left: tier.right
+    anchors.verticalCenter: tier.verticalCenter
+    margin-left: 8
+  DboButton
+    id: upgrade
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    width: 80
+    !text: tr('Forjar')
+
+DboForgeWindow < DboWindow
+  size: 520 440
+  DboSmall
+    id: info
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-wrap: true
+    text-auto-resize: false
+    height: 42
+  UIWidget
+    id: list
+    anchors.top: info.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin: 6 0 6 0
+    layout:
+      type: verticalBox
+      spacing: 4
+  UIWidget
+    id: footer
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 34
+    UIWidget
+      id: shardIcon
+      size: 32 32
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      image-source: /images/dbo/shard
+    DboLabel
+      id: shards
+      anchors.left: shardIcon.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+    DboLabel
+      id: gold
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+
+// ---------------------------------------------------------------- dungeons
+DboDungeonRow < DboCard
+  height: 86
+  UICreature
+    id: outfit
+    size: 64 64
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+  DboTitle
+    id: name
+    anchors.left: outfit.right
+    anchors.top: parent.top
+    margin-left: 6
+  DboSmall
+    id: boss
+    anchors.left: outfit.right
+    anchors.top: name.bottom
+    margin: 2 0 0 6
+  DboSmall
+    id: normalInfo
+    anchors.left: outfit.right
+    anchors.top: boss.bottom
+    margin: 4 0 0 6
+  DboSmall
+    id: hardInfo
+    anchors.left: outfit.right
+    anchors.top: normalInfo.bottom
+    margin: 2 0 0 6
+    color: #ff8a5c
+  DboButton
+    id: normal
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 6
+    width: 110
+  DboButton
+    id: hard
+    anchors.right: parent.right
+    anchors.top: normal.bottom
+    margin-top: 6
+    width: 110
+
+DboDungeonWindow < DboWindow
+  size: 640 470
+  DboSmall
+    id: info
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-wrap: true
+    text-auto-resize: false
+    height: 30
+  UIWidget
+    id: list
+    anchors.top: info.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-top: 6
+    layout:
+      type: verticalBox
+      spacing: 6
+
+// ---------------------------------------------------------------- tasks
+DboTaskRow < DboCard
+  height: 54
+  UICreature
+    id: outfit
+    size: 48 48
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    phantom: true
+  DboTitle
+    id: name
+    anchors.left: outfit.right
+    anchors.top: parent.top
+    margin-left: 6
+  DboSmall
+    id: info
+    anchors.left: outfit.right
+    anchors.top: name.bottom
+    margin: 2 0 0 6
+  DboSmall
+    id: rewards
+    anchors.left: outfit.right
+    anchors.top: info.bottom
+    margin: 2 0 0 6
+    color: #8fe08f
+  DboButton
+    id: action
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    width: 90
+
+DboTabButton < UIButton
+  size: 92 22
+  font: verdana-11px-rounded
+  color: #e8d8b8
+  background-color: #2a1c14
+  border-width: 1
+  border-color: #6b4a1e
+  $on:
+    background-color: #8a4a10
+    color: #ffffff
+  $hover !on:
+    background-color: #3a2618
+
+DboTaskWindow < DboWindow
+  size: 540 560
+  UIWidget
+    id: tabs
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 22
+    layout:
+      type: horizontalBox
+      spacing: 3
+  UIScrollArea
+    id: list
+    anchors.top: tabs.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: footer.top
+    margin: 8 12 6 0
+    vertical-scrollbar: listScroll
+    layout:
+      type: verticalBox
+      spacing: 4
+  VerticalScrollBar
+    id: listScroll
+    anchors.top: list.top
+    anchors.bottom: list.bottom
+    anchors.left: list.right
+    step: 40
+    pixels-scroll: true
+  UIWidget
+    id: footer
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 26
+    DboSmall
+      id: hint
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      !text: tr('Verde: 1a vez. Uma task por vez. !task check / !task clear')
+    DboButton
+      id: clear
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      width: 110
+      !text: tr('Cancelar task')

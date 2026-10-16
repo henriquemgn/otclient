@@ -1,0 +1,9 @@
+Module
+  name: game_dbo
+  description: DBO HUD (health/ki orbs, skills, potions) and systems: classes, stars, wishes (gacha), forge, dungeons, linked tasks, guide arrows
+  author: DBO
+  sandboxed: true
+  dependencies: [ game_interface ]
+  scripts: [ dbo, interface, hud, windows, guide, account ]
+  @onLoad: init()
+  @onUnload: terminate()

@@ -1,0 +1,116 @@
+// =============================================================================
+// DBO guide: direction arrow, task tracker, toasts, tutorial and dungeon bar
+// =============================================================================
+
+DboArrow < UIWidget
+  size: 56 56
+  image-source: /images/dbo/arrow
+  phantom: true
+  focusable: false
+
+DboArrowLabel < Label
+  font: verdana-11px-rounded
+  color: #ffe9b0
+  background-color: #000000a0
+  padding: 2 5 2 5
+  text-auto-resize: true
+  phantom: true
+
+DboTracker < UIWidget
+  size: 190 56
+  background-color: #140c0ad8
+  border-width: 1
+  border-color: #a8772c
+  phantom: false
+  UICreature
+    id: outfit
+    size: 48 48
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-left: 2
+    phantom: true
+  DboTitle
+    id: title
+    anchors.left: outfit.right
+    anchors.top: parent.top
+    margin: 4 0 0 4
+  DboLabel
+    id: progress
+    anchors.left: outfit.right
+    anchors.top: title.bottom
+    margin: 2 0 0 4
+  UIButton
+    id: guide
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 4 4 0
+    size: 46 16
+    font: verdana-11px-rounded
+    color: #ffe9b0
+    background-color: #6a3a0a
+    !text: tr('Guiar')
+    $hover:
+      background-color: #9a5a1a
+
+DboToast < Label
+  font: verdana-11px-rounded
+  color: #ffffff
+  background-color: #000000c8
+  border-width: 1
+  border-color: #a8772c
+  padding: 6 12 6 12
+  text-auto-resize: true
+  phantom: true
+
+DboTutorial < UIWidget
+  width: 380
+  height: 70
+  background-color: #1a100ce8
+  border-width: 2
+  border-color: #e09a30
+  Label
+    id: text
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin: 8 10 0 10
+    height: 40
+    font: verdana-11px-rounded
+    color: #ffe9c8
+    text-wrap: true
+  UIButton
+    id: ok
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 0 6 5 0
+    size: 40 16
+    font: verdana-11px-rounded
+    color: #ffffff
+    background-color: #8a4a10
+    !text: tr('OK')
+
+DboRunBar < UIWidget
+  size: 340 40
+  background-color: #140c0ae0
+  border-width: 1
+  border-color: #c0402a
+  DboTitle
+    id: title
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 3
+  DboLabel
+    id: info
+    anchors.top: title.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 2
+  UIButton
+    id: leave
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 4
+    size: 40 16
+    font: verdana-11px-rounded
+    color: #ffffff
+    background-color: #7a2010
+    !text: tr('Sair')

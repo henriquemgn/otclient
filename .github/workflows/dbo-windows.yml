@@ -1,0 +1,61 @@
+# Builds the DBO client for Windows and publishes it as the release "dbo-client-latest".
+name: DBO Client - Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ dbo-client ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get vcpkg baseline
+        shell: pwsh
+        run: |
+          $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          "VCPKG_GIT_COMMIT_ID=$($json.'builtin-baseline')" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Remove Windows pre-installed MySQL
+        shell: pwsh
+        run: Remove-Item -Recurse -Force C:\mysql* -ErrorAction SilentlyContinue
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Run CMake
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: windows-release
+          buildPreset: windows-release
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON', '-DOPTIONS_ENABLE_IPO=OFF', '-DOTCLIENT_BUILD_TESTS=OFF', '-DOPTIONS_ENABLE_SCCACHE=OFF']"
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $out = "dbo-client"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          Get-ChildItem -Path build/windows-release/bin -File | Copy-Item -Destination $out
+          if (Test-Path "$out/otclient.exe") { Rename-Item "$out/otclient.exe" "dbo.exe" }
+          Get-ChildItem $out -Filter *.pdb | Remove-Item
+          foreach ($d in 'data','modules','mods') { Copy-Item $d "$out/$d" -Recurse }
+          foreach ($f in 'init.lua','config.ini','cacert.pem','otclientrc.lua','LICENSE') { if (Test-Path $f) { Copy-Item $f $out } }
+          Compress-Archive -Path "$out/*" -DestinationPath dbo-client-windows.zip
+          Get-ChildItem $out | Format-Table Name, Length
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: dbo-client-latest
+          name: DBO Client (Windows)
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          files: dbo-client-windows.zip
