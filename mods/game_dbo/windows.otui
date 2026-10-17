@@ -58,73 +58,157 @@ DboPickWindow < DboWindow
       spacing: 8
 
 // ---------------------------------------------------------------- class panel
-DboClassRow < DboCard
-  height: 76
-  UICreature
-    id: outfit
-    size: 64 64
-    anchors.left: parent.left
-    anchors.verticalCenter: parent.verticalCenter
-    phantom: true
-  DboTitle
-    id: name
-    anchors.left: outfit.right
+DboStarRowBig < UIWidget
+  size: 130 24
+  layout:
+    type: horizontalBox
+    spacing: 2
+
+DboClassCard < UIWidget
+  size: 84 96
+  UIWidget
+    id: portrait
+    size: 80 80
     anchors.top: parent.top
-    margin-left: 6
-  DboSmall
-    id: role
-    anchors.left: name.right
-    anchors.verticalCenter: name.verticalCenter
-    margin-left: 6
-    color: #ff9e3d
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true
+  UIWidget
+    id: selection
+    size: 84 84
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: -2
+    border-width: 2
+    border-color: #ffd27a
+    phantom: true
+    visible: false
+  UIWidget
+    id: badge
+    size: 26 26
+    anchors.top: parent.top
+    anchors.left: parent.left
+    margin: -4 0 0 -4
+    image-source: /images/dbo/level_badge
+    phantom: true
+    Label
+      id: level
+      anchors.centerIn: parent
+      font: verdana-11px-rounded
+      color: #ffffff
+      text-auto-resize: true
+      phantom: true
   DboStarRow
     id: stars
-    anchors.left: outfit.right
-    anchors.top: name.bottom
-    margin-left: 6
-    margin-top: 3
-  DboProgress
-    id: fragments
-    anchors.left: outfit.right
-    anchors.top: stars.bottom
-    margin-left: 6
-    margin-top: 5
-    width: 150
+    anchors.bottom: portrait.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-bottom: 3
+    phantom: true
   DboSmall
-    id: form
-    anchors.left: outfit.right
-    anchors.top: fragments.bottom
-    margin-left: 6
-    margin-top: 2
-  DboButton
-    id: use
-    anchors.right: parent.right
+    id: name
+    anchors.top: portrait.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 1
+    phantom: true
+  UIWidget
+    id: active
+    size: 12 12
     anchors.top: parent.top
-    margin-top: 6
-    width: 90
-    !text: tr('Usar')
-  DboBlueButton
-    id: star
     anchors.right: parent.right
-    anchors.top: use.bottom
-    margin-top: 6
-    width: 90
-    !text: tr('Evoluir')
+    image-source: /images/dbo/star_small
+    phantom: true
+    visible: false
 
 DboClassWindow < DboWindow
-  size: 360 412
+  size: 740 430
+  UIWidget
+    id: left
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    width: 300
+    background-color: #120c08
+    border-width: 1
+    border-color: #6b4a1e
+    UIWidget
+      id: portrait
+      anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      margin-top: 4
+      size: 230 230
+    UICreature
+      id: outfit
+      size: 64 64
+      anchors.top: parent.top
+      anchors.right: parent.right
+      margin: 4 4 0 0
+      phantom: true
+    DboTitle
+      id: name
+      anchors.top: portrait.bottom
+      anchors.left: parent.left
+      margin: 4 0 0 10
+    DboSmall
+      id: role
+      anchors.left: name.right
+      anchors.verticalCenter: name.verticalCenter
+      margin-left: 6
+      color: #ff9e3d
+    DboSmall
+      id: stats
+      anchors.top: name.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin: 4 10 0 10
+      text-auto-resize: false
+      text-wrap: true
+      height: 56
+    UIWidget
+      id: bigStars
+      anchors.left: parent.left
+      anchors.bottom: fragments.top
+      margin: 0 0 6 10
+      size: 130 24
+      layout:
+        type: horizontalBox
+        spacing: 2
+    DboProgress
+      id: fragments
+      anchors.left: parent.left
+      anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      margin: 0 10 8 10
+    DboBlueButton
+      id: star
+      anchors.right: use.left
+      anchors.bottom: fragments.top
+      margin: 0 6 4 0
+      size: 72 24
+      !text: tr('Evoluir')
+    DboButton
+      id: use
+      anchors.right: parent.right
+      anchors.bottom: fragments.top
+      margin: 0 10 4 0
+      size: 72 24
+      !text: tr('Usar')
   UIScrollArea
-    id: list
-    anchors.fill: parent
-    vertical-scrollbar: listScroll
+    id: grid
+    anchors.top: parent.top
+    anchors.left: left.right
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin: 6 14 0 10
+    vertical-scrollbar: gridScroll
     layout:
-      type: verticalBox
-      spacing: 6
+      type: grid
+      cell-size: 84 100
+      cell-spacing: 8
+      flow: true
   VerticalScrollBar
-    id: listScroll
-    anchors.top: list.top
-    anchors.bottom: list.bottom
-    anchors.right: list.right
+    id: gridScroll
+    anchors.top: grid.top
+    anchors.bottom: grid.bottom
+    anchors.left: grid.right
     step: 40
     pixels-scroll: true
 

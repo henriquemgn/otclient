@@ -259,6 +259,7 @@ function hudOnGameStart()
     menu:getChildById('forgeButton'):getChildById('icon'):setImageSource('/images/dbo/btn_forge')
     menu:getChildById('dungeonButton'):getChildById('icon'):setImageSource('/images/dbo/btn_dungeon')
     menu:getChildById('tasksButton'):getChildById('icon'):setImageSource('/images/dbo/btn_tasks')
+    menu:getChildById('lootButton'):getChildById('icon'):setImageSource('/images/dbo/btn_loot')
     hud:getChildById('transformButton'):getChildById('icon'):setImageSource('/images/dbo/btn_radar')
 
     slots = {}
@@ -341,4 +342,23 @@ function hudHighlightTasks(enabled)
         button:setBorderWidth(on and 2 or 0)
         button:setOpacity(on and 1 or 0.6)
     end, 450)
+end
+
+-- number of item types waiting in the Loot Stash, shown on the HUD bag button
+function hudSetLootBadge(n)
+    local button = hud and hud:recursiveGetChildById('lootButton')
+    if not button then
+        return
+    end
+    local badge = button:getChildById('badge')
+    badge:setText(tostring(n))
+    badge:setVisible(n > 0)
+end
+
+-- bank balance (zeni) on the HUD
+function hudSetBank(value)
+    local w = hud and hud:getChildById('bank')
+    if w then
+        w:getChildById('value'):setText(formatNumber(value or 0))
+    end
 end

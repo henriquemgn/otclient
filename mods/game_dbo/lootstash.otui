@@ -1,0 +1,78 @@
+// Loot Stash (autoloot) - opened from the HUD bag button (lootstash.lua)
+DboLootCell < Item
+  size: 36 36
+  virtual: true
+  Label
+    id: amount
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-right: 1
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: true
+    phantom: true
+
+DboGreenButton < DboButton
+  image-source: /images/dbo/button_green
+  $hover !disabled:
+    image-source: /images/dbo/button_green
+    opacity: 0.85
+
+DboLootWindow < DboWindow
+  size: 236 254
+  DboGreenButton
+    id: stash
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 100 22
+    !text: tr('Stash')
+    !tooltip: tr('Envia todo o loot para o Stash do depot')
+  DboBlueButton
+    id: collect
+    anchors.top: parent.top
+    anchors.right: parent.right
+    size: 100 22
+    !text: tr('Coletar')
+    !tooltip: tr('Coloca o loot na sua bag')
+  DboTabButton
+    id: tabLoot
+    anchors.top: stash.bottom
+    anchors.left: parent.left
+    margin-top: 6
+    size: 104 18
+    !text: tr('Loot')
+  DboTabButton
+    id: tabDepot
+    anchors.top: stash.bottom
+    anchors.right: parent.right
+    margin-top: 6
+    size: 104 18
+    !text: tr('Depot Stash')
+  UIScrollArea
+    id: grid
+    anchors.top: tabLoot.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: hint.top
+    margin: 6 12 4 0
+    vertical-scrollbar: gridScroll
+    layout:
+      type: grid
+      cell-size: 36 36
+      cell-spacing: 3
+      flow: true
+  VerticalScrollBar
+    id: gridScroll
+    anchors.top: grid.top
+    anchors.bottom: grid.bottom
+    anchors.left: grid.right
+    step: 39
+    pixels-scroll: true
+  DboSmall
+    id: hint
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    text-auto-resize: false
+    height: 28
+    text-wrap: true

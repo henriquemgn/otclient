@@ -1,0 +1,85 @@
+// bank window (HUD balance) and the generic amount dialog (bank.lua)
+DboBankWindow < DboWindow
+  size: 280 250
+  DboSmall
+    !text: tr('Saldo no banco')
+    anchors.top: parent.top
+    anchors.left: parent.left
+  DboTitle
+    id: balance
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 2
+  DboSmall
+    id: carried
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 2
+  DboSmall
+    !text: tr('Quantia')
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    margin-top: 10
+  DboField
+    id: amount
+    anchors.top: prev.bottom
+    margin-top: 2
+  DboButton
+    id: deposit
+    anchors.top: amount.bottom
+    anchors.left: parent.left
+    margin-top: 8
+    size: 124 24
+    !text: tr('Depositar')
+  DboButton
+    id: depositAll
+    anchors.top: amount.bottom
+    anchors.right: parent.right
+    margin-top: 8
+    size: 124 24
+    !text: tr('Depositar tudo')
+  DboBlueButton
+    id: withdraw
+    anchors.top: deposit.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 24
+    !text: tr('Sacar')
+  DboSmall
+    !text: tr('Transferir para (nome do personagem)')
+    anchors.top: withdraw.bottom
+    anchors.left: parent.left
+    margin-top: 10
+  DboField
+    id: target
+    anchors.top: prev.bottom
+    margin-top: 2
+  DboGreenButton
+    id: transfer
+    anchors.top: target.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 24
+    !text: tr('Transferir')
+
+DboAmountWindow < DboWindow
+  size: 240 120
+  DboSmall
+    id: label
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-auto-resize: false
+    height: 14
+  DboField
+    id: amount
+    anchors.top: prev.bottom
+    margin-top: 4
+  DboButton
+    id: ok
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    size: 90 24
+    !text: tr('Ok')

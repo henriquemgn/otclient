@@ -1,0 +1,54 @@
+// DBO chat look: dark panel, red active tab, small square buttons (chat.lua)
+ConsoleTabBarButton < UIButton
+  size: 96 18
+  font: verdana-11px-rounded
+  color: #a89880
+  background-color: #1c120e
+  border-width: 1
+  border-color: #3a2618
+  text-offset: 0 0
+  anchors.top: parent.top
+  anchors.left: parent.left
+  padding: 5
+  tab-spacing: 0
+  padding-left: 14
+  padding-right: 14
+  &tabWidth: 95
+  $hover !checked:
+    background-color: #2a1c14
+  $checked:
+    color: #ffffff
+    background-color: #7a1a10
+    border-color: #c0402a
+  $on !checked:
+    color: #ff6a5a
+    background-color: #1c120e
+
+ConsoleTabBarPanel < MoveableTabBarPanel
+  id: consoleTab
+
+  ScrollablePanel
+    id: consoleBuffer
+    anchors.fill: parent
+    background-color: #0a0605d0
+    padding: 1
+    padding-right: 12
+    padding-left: 4
+    padding-top: 4
+    padding-bottom: 4
+    vertical-scrollbar: consoleScrollBar
+    layout:
+      type: verticalBox
+      align-bottom: true
+    inverted-scroll: true
+
+  VerticalQtScrollBar
+    id: consoleScrollBar
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    step: 14
+    pixels-scroll: true
+    margin-top: 4
+    margin-right: 4
+    margin-bottom: 4

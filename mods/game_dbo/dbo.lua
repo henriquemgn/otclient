@@ -81,6 +81,17 @@ on('state', function(data)
     state.stats = data.stats or {}
     state.config = data.config or {}
     state.level = data.level
+    state.bank = data.bank or 0
+    if hudSetBank then
+        hudSetBank(state.bank)
+    end
+end)
+
+on('bank', function(data)
+    state.bank = data.value or 0
+    if hudSetBank then
+        hudSetBank(state.bank)
+    end
 end)
 
 function getClass(id)
@@ -105,6 +116,8 @@ local function onGameStart()
     hudOnGameStart()
     guideOnGameStart()
     if titlesOnGameStart then titlesOnGameStart() end
+    lootStashOnGameStart()
+    bankOnGameStart()
     -- the server answers with the full state ("state", "tracker", "arrow"...)
     helloEvent = scheduleEvent(function()
         helloEvent = nil
@@ -121,6 +134,8 @@ local function onGameEnd()
     windowsOnGameEnd()
     guideOnGameEnd()
     if titlesOnGameEnd then titlesOnGameEnd() end
+    lootStashOnGameEnd()
+    bankOnGameEnd()
 end
 
 function init()
@@ -131,6 +146,9 @@ function init()
     windowsInit()
     guideInit()
     if titlesInit then titlesInit() end
+    lootStashInit()
+    chatInit()
+    bankInit()
     if g_game.isOnline() then
         onGameStart()
     end
@@ -143,6 +161,8 @@ function terminate()
     windowsTerminate()
     guideTerminate()
     if titlesTerminate then titlesTerminate() end
+    lootStashTerminate()
+    bankTerminate()
     accountTerminate()
 end
 

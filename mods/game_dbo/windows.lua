@@ -56,6 +56,7 @@ local function showPick(classes)
     local cards = pickWindow:getChildById('cards')
     cards:destroyChildren()
     for _, c in ipairs(classes) do
+        if c.starter ~= false then
         local card = g_ui.createWidget('DboPickCard', cards)
         card:getChildById('outfit'):setOutfit({ type = c.forms[1].look })
         card:getChildById('name'):setText(c.name)
@@ -65,57 +66,131 @@ local function showPick(classes)
             send('pick', { id = c.id })
             pickWindow:hide()
         end
+        end
     end
     showWindow(pickWindow)
 end
 
 -- ---------------------------------------------------------------- class panel
+local selectedClass
+
+local function portraitPath(c, kind)
+    return '/images/dbo/portraits/' .. (c.key or 'goku') .. (kind or '')
+end
+
+local function showClassDetails(c)
+    local left = classWindow:getChildById('left')
+    selectedClass = c.id
+    left:getChildById('portrait'):setImageSource(portraitPath(c))
+    left:getChildById('portrait'):setOpacity(c.unlocked and 1 or 0.45)
+    left:getChildById('outfit'):setOutfit({ type = c.look })
+    left:getChildById('name'):setText(c.unlocked and string.format('%s  Nv %d', c.name, c.level or 1) or c.name)
+    left:getChildById('role'):setText(c.role)
+    local starBonus = state.config.starBonus and state.config.starBonus[c.stars > 0 and c.stars or 1] or 0
+    local form = c.forms[c.form]
+    local lines = { c.description or '' }
+    if c.unlocked then
+        lines[#lines + 1] = string.format('Forma: %s   |   Estrelas: +%d%% dano e vida', form and form.name or '-', math.floor(starBonus * 100 + 0.5))
+        local nextForm = c.forms[(c.bestForm or 1) + 1]
+        if nextForm then
+            lines[#lines + 1] = string.format('Proxima transformacao: %s (nivel %d)', nextForm.name, nextForm.level)
+        end
+        if c.id == state.active and state.stats then
+            lines[#lines + 1] = string.format('Dano %d%%  Vida %d%%  Dano recebido %d%%', state.stats.damage or 100, state.stats.health or 100, state.stats.taken or 100)
+        end
+    else
+        lines[#lines + 1] = 'Bloqueado: consiga fragmentos nos Desejos.'
+    end
+    left:getChildById('stats'):setText(table.concat(lines, '\n'))
+
+    local stars = left:getChildById('bigStars')
+    stars:destroyChildren()
+    for k = 1, 5 do
+        local w = g_ui.createWidget('UIWidget', stars)
+        w:setSize({ width = 24, height = 24 })
+        w:setImageSource(k <= c.stars and '/images/dbo/star' or '/images/dbo/star_empty')
+    end
+
+    local frag, use, star = left:getChildById('fragments'), left:getChildById('use'), left:getChildById('star')
+    if c.unlocked then
+        if c.stars >= 5 then
+            setProgress(frag, 1, 1, string.format('%d fragmentos - MAX', c.fragments))
+            star:setEnabled(false)
+            star:setText('MAX')
+        else
+            setProgress(frag, c.fragments, c.nextCost, string.format('%d/%d fragmentos', c.fragments, c.nextCost))
+            star:setText('Evoluir')
+            star:setEnabled(c.fragments >= c.nextCost)
+        end
+        use:setEnabled(c.id ~= state.active)
+        use:setText(c.id == state.active and 'Em uso' or 'Usar')
+    else
+        setProgress(frag, c.fragments, c.nextCost, string.format('%d/%d para desbloquear', c.fragments, c.nextCost))
+        use:setEnabled(false)
+        use:setText('Bloqueado')
+        star:setText('Liberar')
+        star:setEnabled(c.fragments >= c.nextCost)
+    end
+    use.onClick = function() send('switch', { id = c.id }) end
+    star.onClick = function() send('star', { id = c.id }) end
+
+    for _, card in ipairs(classWindow:getChildById('grid'):getChildren()) do
+        card:getChildById('selection'):setVisible(card.classId == c.id)
+    end
+end
+
 local function refreshClassWindow()
     if not classWindow or not classWindow:isVisible() then
         return
     end
-    local list = classWindow:getChildById('list')
-    list:destroyChildren()
+    local grid = classWindow:getChildById('grid')
+    grid:destroyChildren()
+    local selected
+    -- unlocked first (highest level), then locked
+    local list = {}
     for _, c in ipairs(state.classes) do
-        local row = g_ui.createWidget('DboClassRow', list)
-        row:getChildById('outfit'):setOutfit({ type = c.look })
-        row:getChildById('name'):setText(c.unlocked and string.format('%s  -  Nv %d', c.name, c.level or 1) or c.name)
-        row:getChildById('role'):setText(c.role)
-        setStars(row:getChildById('stars'), c.stars)
-        local frag = row:getChildById('fragments')
-        local use, star = row:getChildById('use'), row:getChildById('star')
-        if c.unlocked then
-            if c.stars >= 5 then
-                setProgress(frag, 1, 1, string.format('%d fragmentos - MAX', c.fragments))
-                star:setEnabled(false)
-                star:setText('5 estrelas')
-            else
-                setProgress(frag, c.fragments, c.nextCost, string.format('%d/%d fragmentos', c.fragments, c.nextCost))
-                star:setText('Evoluir')
-                star:setEnabled(c.fragments >= c.nextCost)
-            end
-            local form = c.forms[c.form]
-            row:getChildById('form'):setText(string.format('Forma: %s', form and form.name or '-'))
-            use:setEnabled(c.id ~= state.active)
-            use:setText(c.id == state.active and 'Em uso' or 'Usar')
-        else
-            row:setOpacity(0.75)
-            setProgress(frag, c.fragments, c.nextCost, string.format('%d/%d para desbloquear', c.fragments, c.nextCost))
-            row:getChildById('form'):setText('Bloqueado - consiga fragmentos nos Desejos')
-            use:setEnabled(false)
-            use:setText('Bloqueado')
-            star:setText('Desbloquear')
-            star:setEnabled(c.fragments >= c.nextCost)
+        list[#list + 1] = c
+    end
+    table.sort(list, function(a, b)
+        if a.unlocked ~= b.unlocked then
+            return a.unlocked
         end
-        local bonus = state.config.starBonus and state.config.starBonus[c.stars > 0 and c.stars or 1] or 0
-        row:setTooltip(string.format('%s\nEstrelas: +%d%% dano e vida', c.description, math.floor(bonus * 100 + 0.5)))
-        use.onClick = function() send('switch', { id = c.id }) end
-        star.onClick = function() send('star', { id = c.id }) end
+        if (a.level or 1) ~= (b.level or 1) then
+            return (a.level or 1) > (b.level or 1)
+        end
+        return a.id < b.id
+    end)
+    for _, c in ipairs(list) do
+        local card = g_ui.createWidget('DboClassCard', grid)
+        card.classId = c.id
+        card:getChildById('portrait'):setImageSource(portraitPath(c, c.unlocked and '_thumb' or '_locked'))
+        card:getChildById('name'):setText(c.name)
+        local badge = card:getChildById('badge')
+        badge:setVisible(c.unlocked)
+        badge:getChildById('level'):setText(tostring(c.level or 1))
+        setStars(card:getChildById('stars'), c.stars)
+        card:getChildById('stars'):setVisible(c.unlocked)
+        card:getChildById('active'):setVisible(c.id == state.active)
+        card:setTooltip(c.unlocked and string.format('%s - nivel %d\nDuplo clique: usar', c.name, c.level or 1)
+            or string.format('%s - %d/%d fragmentos', c.name, c.fragments, c.nextCost))
+        card.onClick = function() showClassDetails(c) end
+        card.onDoubleClick = function()
+            if c.unlocked and c.id ~= state.active then
+                send('switch', { id = c.id })
+            end
+        end
+        if c.id == (selectedClass or state.active) then
+            selected = c
+        end
+    end
+    if selected or list[1] then
+        showClassDetails(selected or list[1])
     end
 end
 
 function toggleClassPanel()
-    toggle(classWindow, refreshClassWindow)
+    -- fragments are items now (trade/pick up): ask for fresh counts
+    toggle(classWindow, function() send('state') refreshClassWindow() end)
 end
 
 -- ---------------------------------------------------------------- wishes

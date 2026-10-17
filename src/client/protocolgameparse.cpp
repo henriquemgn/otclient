@@ -29,6 +29,9 @@
 #include "item.h"
 #include "localplayer.h"
 #include "protocolgame.h"
+#include <framework/core/resourcemanager.h>
+#include <sstream>
+#include <unordered_set>
 #include "protocolcodes.h"
 #include "luavaluecasts_client.h"
 #include "map.h"
@@ -4327,6 +4330,30 @@ CreaturePtr ProtocolGame::getCreature(const InputMessagePtr& msg, int type) cons
     return creature;
 }
 
+
+// DBO: forgeable equipment carries its forge tier after the item data.
+// The list of client ids is shared with the server (tools/tier_items.py).
+static bool dboHasTier(const uint16_t clientId)
+{
+    static std::unordered_set<uint16_t> ids;
+    static bool loaded = false;
+    if (!loaded) {
+        loaded = true;
+        try {
+            const std::string content = g_resources.readFileContents("/data/things/dbo_tier_clients.txt");
+            std::istringstream in(content);
+            std::string line;
+            while (std::getline(in, line)) {
+                if (!line.empty() && line[0] != '#') {
+                    ids.insert(static_cast<uint16_t>(std::stoul(line)));
+                }
+            }
+        } catch (...) {
+        }
+    }
+    return ids.contains(clientId);
+}
+
 ItemPtr ProtocolGame::getItem(const InputMessagePtr& msg, int id)
 {
     if (id == 0) {
@@ -4452,6 +4479,10 @@ ItemPtr ProtocolGame::getItem(const InputMessagePtr& msg, int id)
         if (item->getClassification()) {
             item->setTier(msg->getU8());
         }
+    }
+
+    if (dboHasTier(item->getId())) {
+        item->setTier(msg->getU8());
     }
 
     if (g_game.getFeature(Otc::GameThingClock)) {

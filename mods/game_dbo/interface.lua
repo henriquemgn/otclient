@@ -40,7 +40,8 @@ local function applyCleanLayout()
     end
     local rootPanel = iface.getRootPanel()
     for _, id in ipairs({ 'gameBottomCooldownPanel', 'leftIncreaseSidePanels', 'leftDecreaseSidePanels', 'rightIncreaseSidePanels',
-        'rightDecreaseSidePanels', 'bottomSplitter', 'gameSelectLeftColumn', 'gameSelectRightColumn', 'gameSelectRightExtraColumn', 'gameSelectLeftExtraColumn' }) do
+        'rightDecreaseSidePanels', 'bottomSplitter', 'gameSelectLeftColumn', 'gameSelectRightColumn', 'gameSelectRightExtraColumn', 'gameSelectLeftExtraColumn',
+        'gameLeftActionPanel', 'gameRightActionPanel', 'gameBottomActionPanel', 'lockPanel' }) do
         local w = rootPanel:recursiveGetChildById(id)
         if w then
             w:setVisible(false)
@@ -69,7 +70,7 @@ local function applyCleanLayout()
         bottom:breakAnchors()
         bottom:addAnchor(AnchorLeft, 'parent', AnchorLeft)
         bottom:addAnchor(AnchorBottom, 'parent', AnchorBottom)
-        bottom:setWidth(math.min(380, math.floor(rootPanel:getWidth() * 0.28)))
+        bottom:setWidth(math.min(380, math.floor(rootPanel:getWidth() * 0.24)))
         bottom:setHeight(170)
         bottom:setMarginLeft(4)
         bottom:setMarginBottom(4)
@@ -108,6 +109,15 @@ local function applyCleanLayout()
 
     if modules.client_background and modules.client_background.hide then
         modules.client_background.hide()
+    end
+    -- spell group cooldown icons (the DBO HUD shows its own cooldowns)
+    local cd = modules.game_cooldown and modules.game_cooldown.cooldownWindow
+    if cd then
+        cd:setVisible(false)
+        cd:setHeight(0)
+    end
+    if styleChat then
+        styleChat()
     end
     if hud then
         hud:raise()

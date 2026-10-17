@@ -263,24 +263,62 @@ UIWidget
     margin-bottom: -4
 
   UIWidget
+    id: bank
+    anchors.bottom: menu.top
+    anchors.horizontalCenter: menu.horizontalCenter
+    margin-bottom: 2
+    size: 110 18
+    background-color: #000000a0
+    border-width: 1
+    border-color: #a8772c
+    !tooltip: tr('Banco (zeni) - clique para depositar, sacar ou transferir. O gold do autoloot vai direto para ca.')
+    @onClick: modules.game_dbo.toggleBank()
+    UIWidget
+      id: coin
+      size: 14 14
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+      image-source: /images/dbo/coin
+      phantom: true
+    Label
+      id: value
+      anchors.left: coin.right
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 3
+      font: verdana-11px-rounded
+      color: #ffe066
+      text-align: center
+      phantom: true
+
+  UIWidget
     id: menu
     anchors.left: manaOrb.right
     anchors.bottom: parent.bottom
     margin-left: 4
     margin-bottom: 6
-    size: 88 88
+    size: 88 134
     phantom: true
 
     DboRoundButton
-      id: wishButton
+      id: lootButton
       anchors.top: parent.top
+      anchors.horizontalCenter: parent.horizontalCenter
+      !tooltip: tr('Loot Stash')
+      @onClick: modules.game_dbo.toggleLootStash()
+
+    DboRoundButton
+      id: wishButton
+      anchors.top: lootButton.bottom
       anchors.left: parent.left
+      margin-top: 6
       !tooltip: tr('Desejos (Gacha)')
       @onClick: modules.game_dbo.toggleWish()
 
     DboRoundButton
       id: forgeButton
-      anchors.top: parent.top
+      anchors.top: wishButton.top
       anchors.left: wishButton.right
       margin-left: 6
       !tooltip: tr('Forja')

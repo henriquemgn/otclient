@@ -156,7 +156,7 @@ function ItemsDatabase.getTierClip(tier)
 end
 
 function ItemsDatabase.setTier(widget, item, isSmall)
-    if not g_game.getFeature(GameThingUpgradeClassification) or not widget or not widget.tier then
+    if not widget or not widget.tier then -- DBO: forge tiers come without classification
         return
     end
     if isSmall == nil then
