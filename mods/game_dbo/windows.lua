@@ -287,7 +287,7 @@ local function fillTasks()
             row:getChildById('info'):setText(status)
             local r = t.rewards
             local rewardText = string.format('%s exp, %s zeni%s%s', formatNumber(r.exp), formatNumber(r.gold),
-                r.shards > 0 and (', ' .. r.shards .. ' Ki Shards') or '', r.senzu > 0 and (', ' .. r.senzu .. ' Senzu') or '')
+                r.shards > 0 and (', ' .. r.shards .. ' Ki Shards') or '', r.senzu > 0 and (', ' .. r.senzu .. ' Senzu') or '') .. (r.item and (', ' .. r.item) or '')
             local rewards = row:getChildById('rewards')
             rewards:setText((r.first and 'Primeira vez: ' or 'Repeticao: ') .. rewardText)
             rewards:setColor(r.first and '#8fe08f' or '#ff8a7a')

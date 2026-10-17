@@ -4,6 +4,6 @@ Module
   author: DBO
   sandboxed: true
   dependencies: [ game_interface ]
-  scripts: [ dbo, interface, hud, windows, guide, account ]
+  scripts: [ dbo, interface, hud, windows, guide, account, titles ]
   @onLoad: init()
   @onUnload: terminate()

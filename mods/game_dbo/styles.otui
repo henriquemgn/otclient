@@ -209,3 +209,27 @@ DboAccountWindow < DboWindow
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     !text: tr('Criar')
+
+// class + stars above player names (titles.lua); positioned by margins
+// relative to the creature's head point (name is drawn ~12px above it)
+DboCreatureTitle < UIWidget
+  size: 80 25
+  margin-left: -40
+  margin-top: -39
+  phantom: true
+  focusable: false
+
+  Label
+    id: cls
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    font: verdana-11px-rounded
+    color: #ffd27a
+    text-auto-resize: true
+    phantom: true
+
+  DboStarRow
+    id: stars
+    anchors.bottom: parent.bottom
+    anchors.horizontalCenter: parent.horizontalCenter
+    phantom: true

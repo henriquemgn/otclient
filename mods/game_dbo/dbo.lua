@@ -104,6 +104,7 @@ local function onGameStart()
     windowsCreate()
     hudOnGameStart()
     guideOnGameStart()
+    if titlesOnGameStart then titlesOnGameStart() end
     -- the server answers with the full state ("state", "tracker", "arrow"...)
     helloEvent = scheduleEvent(function()
         helloEvent = nil
@@ -119,6 +120,7 @@ local function onGameEnd()
     hudOnGameEnd()
     windowsOnGameEnd()
     guideOnGameEnd()
+    if titlesOnGameEnd then titlesOnGameEnd() end
 end
 
 function init()
@@ -128,6 +130,7 @@ function init()
     hudInit()
     windowsInit()
     guideInit()
+    if titlesInit then titlesInit() end
     if g_game.isOnline() then
         onGameStart()
     end
@@ -139,6 +142,7 @@ function terminate()
     hudTerminate()
     windowsTerminate()
     guideTerminate()
+    if titlesTerminate then titlesTerminate() end
     accountTerminate()
 end
 
