@@ -79,7 +79,7 @@ local function refreshClassWindow()
     for _, c in ipairs(state.classes) do
         local row = g_ui.createWidget('DboClassRow', list)
         row:getChildById('outfit'):setOutfit({ type = c.look })
-        row:getChildById('name'):setText(c.name)
+        row:getChildById('name'):setText(c.unlocked and string.format('%s  -  Nv %d', c.name, c.level or 1) or c.name)
         row:getChildById('role'):setText(c.role)
         setStars(row:getChildById('stars'), c.stars)
         local frag = row:getChildById('fragments')
