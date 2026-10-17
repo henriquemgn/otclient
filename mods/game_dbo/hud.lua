@@ -292,6 +292,9 @@ function hudOnGameStart()
 end
 
 function hudOnGameEnd()
+    if hudHighlightTasks then
+        hudHighlightTasks(false)
+    end
     local root = modules.game_interface.getRootPanel()
     if root then
         for i = 1, 8 do
@@ -308,4 +311,34 @@ function hudOnGameEnd()
         hud:destroy()
         hud = nil
     end
+end
+
+-- blink the HUD "Linked Tasks" button while a finished task waits for delivery
+local tasksBlinkEvent
+function hudHighlightTasks(enabled)
+    if tasksBlinkEvent then
+        removeEvent(tasksBlinkEvent)
+        tasksBlinkEvent = nil
+    end
+    local button = hud and hud:recursiveGetChildById('tasksButton')
+    if not button then
+        return
+    end
+    button:setBorderWidth(0)
+    button:setOpacity(1)
+    if not enabled then
+        return
+    end
+    local on = false
+    button:setBorderColor('#ffe066')
+    tasksBlinkEvent = cycleEvent(function()
+        if button:isDestroyed() then
+            removeEvent(tasksBlinkEvent)
+            tasksBlinkEvent = nil
+            return
+        end
+        on = not on
+        button:setBorderWidth(on and 2 or 0)
+        button:setOpacity(on and 1 or 0.6)
+    end, 450)
 end

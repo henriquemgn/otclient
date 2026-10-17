@@ -116,8 +116,15 @@ local function setTracker(data)
     tracker:getChildById('outfit'):setOutfit({ type = data.look })
     tracker:getChildById('title'):setText(data.monster)
     local progress = tracker:getChildById('progress')
-    progress:setText(data.complete and 'Completa! Entregue no Salao' or string.format('%d / %d', data.kills, data.total))
+    progress:setText(data.complete and 'Completa! Clique em Tasks' or string.format('%d / %d', data.kills, data.total))
     progress:setColor(data.complete and '#8fe08f' or '#ffffff')
+    -- finished task: the tracker button delivers it and the HUD Tasks button blinks
+    local button = tracker:getChildById('guide')
+    button:setText(data.complete and 'Entregar' or 'Guiar')
+    tracker.completeId = data.complete and data.id or nil
+    if hudHighlightTasks then
+        hudHighlightTasks(data.complete == true)
+    end
 end
 
 local function showTutorial(data)
@@ -203,7 +210,13 @@ function guideOnGameStart()
     tracker:addAnchor(AnchorHorizontalCenter, 'parent', AnchorHorizontalCenter)
     tracker:setMarginTop(8)
     tracker:setMarginLeft(260)
-    tracker:getChildById('guide').onClick = function() send('guide') end
+    tracker:getChildById('guide').onClick = function()
+        if tracker.completeId then
+            toggleTasks()
+        else
+            send('guide')
+        end
+    end
     tracker:hide()
 
     tutorial = g_ui.createWidget('DboTutorial', parent)
